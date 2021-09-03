@@ -14,6 +14,16 @@ class DecryptionMethod:
     def affine_decipher(input, key):
         return affineDecipher(input, key)
 
+class UtilityFunction:
+    @staticmethod
+    def splitText(text):
+        listOfChar = [char for char in text]
+        stringRes = ''
+        for i in listOfChar:
+            stringRes += i
+        
+        return stringRes
+
 class ConverterFrame(ttk.Frame):
     def __init__(self, container, keyTotal, cipherMethod):
         super().__init__(container)
@@ -95,11 +105,11 @@ class ConverterFrame(ttk.Frame):
         self.encryptText.config(state='normal')
         self.encryptText.delete('1.0', 'end')
 
-        input_txt = self.inputText.get('1.0', 'end')
+        input_txt = UtilityFunction.splitText(self.inputText.get('1.0', 'end')).lower()
         input_key1 = int(self.key1_entry.get())
 
         if(self.cipherMethod == 'affine_cipher'):
-            encrypted = EncryptionMethod.affine_cipher(input_txt, input_key1)
+            encrypted = EncryptionMethod.affine_cipher(input_txt, input_key1).upper()
 
         self.encryptText.insert(tk.INSERT, encrypted)
         self.encryptText.config(state='disabled')
@@ -108,11 +118,11 @@ class ConverterFrame(ttk.Frame):
         self.decryptText.config(state='normal')
         self.decryptText.delete('1.0', 'end')
 
-        input_txt = self.encryptText.get('1.0', 'end-1c')
+        input_txt = self.encryptText.get('1.0', 'end-1c').lower()
         input_key1 = int(self.key1_entry.get())
         
         if(self.cipherMethod == 'affine_cipher'):
-            decrypted = DecryptionMethod.affine_decipher(input_txt, input_key1)
+            decrypted = DecryptionMethod.affine_decipher(input_txt, input_key1).upper()
 
         self.decryptText.insert(tk.INSERT, decrypted)
         self.decryptText.config(state='disabled')
