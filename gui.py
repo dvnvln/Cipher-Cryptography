@@ -87,6 +87,20 @@ class UtilityFunction:
             pass
         return file_path
 
+    @staticmethod
+    def toAlphabetOnly(text):
+        text = text.lower()
+        alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+             'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+        
+        textList = [char for char in text]
+        alphabetOnlyText = ''
+        for char in textList:
+            if (char in alphabet):
+                alphabetOnlyText += char
+        
+        return alphabetOnlyText
+
 class ConverterFrame(ttk.Frame):
     def __init__(self, container, keyTotal, cipherMethod):
         super().__init__(container)
@@ -172,15 +186,15 @@ class ConverterFrame(ttk.Frame):
             encrypted = EncryptionMethod.affine_cipher(input_txt, input_key1).upper()
         elif(self.cipherMethod == 'standard_vigenere'):
             input_key1 = self.key1_entry.get()
-            input_txt = UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower()
+            input_txt = UtilityFunction.toAlphabetOnly(UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower())
             encrypted = EncryptionMethod.standard_vigenere(input_key1, input_txt).upper()
         elif(self.cipherMethod == 'full_vigenere'):
             input_key1 = self.key1_entry.get()
-            input_txt = UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower()
+            input_txt = UtilityFunction.toAlphabetOnly(UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower())
             encrypted = EncryptionMethod.full_vigenere(input_key1, input_txt).upper()
         elif(self.cipherMethod == 'autoKey_vigenere'):
             input_key1 = self.key1_entry.get()
-            input_txt = UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower()
+            input_txt = UtilityFunction.toAlphabetOnly(UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower())
             encrypted = EncryptionMethod.autoKey_vigenere(input_key1, input_txt).upper()
         elif(self.cipherMethod == 'extended_vigenere'):
             input_key1 = self.key1_entry.get()
@@ -188,7 +202,7 @@ class ConverterFrame(ttk.Frame):
             encrypted = EncryptionMethod.extended_vigenere(input_key1, input_txt)
         elif(self.cipherMethod == 'playfair_cipher'):
             input_key1 = self.key1_entry.get()
-            input_txt = UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower()
+            input_txt = UtilityFunction.toAlphabetOnly(UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower())
             encrypted = EncryptionMethod.playfair_cipher(input_key1, input_txt).upper()
 
         self.encryptText.insert(tk.INSERT, encrypted)
@@ -205,15 +219,15 @@ class ConverterFrame(ttk.Frame):
             input_key1 = int(self.key1_entry.get())
             decrypted = DecryptionMethod.affine_decipher(input_txt, input_key1).upper()
         elif(self.cipherMethod == 'standard_vigenere'):
-            input_txt = self.inputText.get('1.0', 'end-1c').lower()
+            input_txt = UtilityFunction.toAlphabetOnly(UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower())
             input_key1 = self.key1_entry.get()
             decrypted = DecryptionMethod.standard_vigenere(input_key1, input_txt).upper()
         elif(self.cipherMethod == 'full_vigenere'):
-            input_txt = self.inputText.get('1.0', 'end-1c').lower()
+            input_txt = UtilityFunction.toAlphabetOnly(UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower())
             input_key1 = self.key1_entry.get()
             decrypted = DecryptionMethod.full_vigenere(input_key1, input_txt).upper()
         elif(self.cipherMethod == 'autoKey_vigenere'):
-            input_txt = self.inputText.get('1.0', 'end-1c').lower()
+            input_txt = UtilityFunction.toAlphabetOnly(UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower())
             input_key1 = self.key1_entry.get()
             decrypted = DecryptionMethod.autoKey_vigenere(input_key1, input_txt).upper()
         elif(self.cipherMethod == 'extended_vigenere'):
@@ -221,7 +235,7 @@ class ConverterFrame(ttk.Frame):
             input_key1 = self.key1_entry.get()
             decrypted = DecryptionMethod.extended_vigenere(input_key1, input_txt)
         elif(self.cipherMethod == 'playfair_cipher'):
-            input_txt = self.inputText.get('1.0', 'end-1c').lower()
+            input_txt = UtilityFunction.toAlphabetOnly(UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower())
             input_key1 = self.key1_entry.get()
             decrypted = DecryptionMethod.playfair_cipher(input_key1, input_txt).upper()
 
