@@ -163,7 +163,7 @@ class ConverterFrame(ttk.Frame):
         self.inputText.delete('1.0', 'end')
         self.decryptText.config(state='disabled')
         self.encryptText.config(state='disabled')
-        self.result_label.text = ''
+        # self.result_label.text = ''
 
 
 class ControlFrame(ttk.LabelFrame):
