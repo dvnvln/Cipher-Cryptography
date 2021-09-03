@@ -3,6 +3,11 @@ from tkinter import ttk
 from tkinter.messagebox import showerror
 from tkinter.filedialog import askopenfilename
 from affine import *
+from standardvigenere import *
+from fullvigenere import *
+from autokeyvigenere import *
+from extendedvigenere import *
+from playfair import *
 
 
 class EncryptionMethod:
@@ -10,10 +15,60 @@ class EncryptionMethod:
     def affine_cipher(input, key):
         return affineCipher(input, key)
 
+    @staticmethod
+    def standard_vigenere(key, input):
+        standard = StandardVigenere(key, input)
+        return standard.getCipherText()
+
+    @staticmethod
+    def full_vigenere(key, input):
+        full = FullVigenere(key, input)
+        return full.getCipherText()
+
+    @staticmethod
+    def autoKey_vigenere(key, input):
+        auto = AutoKeyVigenere(key, input)
+        return auto.getCipherText()
+
+    @staticmethod
+    def extended_vigenere(key, input):
+        ext = ExtendedVigenere(key, input)
+        return ext.getCipherText()
+
+    @staticmethod
+    def playfair_cipher(key, input):
+        play = PlayFair(key, input)
+        return play.getCipherText()
+
 class DecryptionMethod:
     @staticmethod
     def affine_decipher(input, key):
         return affineDecipher(input, key)
+
+    @staticmethod
+    def standard_vigenere(key, input):
+        standard = StandardVigenere(key, input)
+        return standard.getOriginText()
+
+    @staticmethod
+    def full_vigenere(key, input):
+        full = FullVigenere(key, input)
+        return full.getOriginText()
+
+    @staticmethod
+    def autoKey_vigenere(key, input):
+        auto = AutoKeyVigenere(key, input)
+        return auto.getOriginText()
+
+    @staticmethod
+    def extended_vigenere(key, input):
+        ext = ExtendedVigenere(key, input)
+        return ext.getOriginText()
+
+    @staticmethod
+    def playfair_cipher(key, input):
+        play = PlayFair(key, input)
+        return play.getOriginText()
 
 class UtilityFunction:
     @staticmethod
@@ -111,11 +166,30 @@ class ConverterFrame(ttk.Frame):
         self.encryptText.config(state='normal')
         self.encryptText.delete('1.0', 'end')
 
-        input_txt = UtilityFunction.splitText(self.inputText.get('1.0', 'end')).lower()
-        input_key1 = int(self.key1_entry.get())
-
         if(self.cipherMethod == 'affine_cipher'):
+            input_key1 = int(self.key1_entry.get())
+            input_txt = UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower()
             encrypted = EncryptionMethod.affine_cipher(input_txt, input_key1).upper()
+        elif(self.cipherMethod == 'standard_vigenere'):
+            input_key1 = self.key1_entry.get()
+            input_txt = UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower()
+            encrypted = EncryptionMethod.standard_vigenere(input_key1, input_txt).upper()
+        elif(self.cipherMethod == 'full_vigenere'):
+            input_key1 = self.key1_entry.get()
+            input_txt = UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower()
+            encrypted = EncryptionMethod.full_vigenere(input_key1, input_txt).upper()
+        elif(self.cipherMethod == 'autoKey_vigenere'):
+            input_key1 = self.key1_entry.get()
+            input_txt = UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower()
+            encrypted = EncryptionMethod.autoKey_vigenere(input_key1, input_txt).upper()
+        elif(self.cipherMethod == 'extended_vigenere'):
+            input_key1 = self.key1_entry.get()
+            input_txt = self.inputText.get('1.0', 'end-1c')
+            encrypted = EncryptionMethod.extended_vigenere(input_key1, input_txt)
+        elif(self.cipherMethod == 'playfair_cipher'):
+            input_key1 = self.key1_entry.get()
+            input_txt = UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower()
+            encrypted = EncryptionMethod.playfair_cipher(input_key1, input_txt).upper()
 
         self.encryptText.insert(tk.INSERT, encrypted)
         self.encryptText.config(state='disabled')
@@ -125,12 +199,31 @@ class ConverterFrame(ttk.Frame):
     def decrypt(self, event=None):
         self.decryptText.config(state='normal')
         self.decryptText.delete('1.0', 'end')
-
-        input_txt = self.encryptText.get('1.0', 'end-1c').lower()
-        input_key1 = int(self.key1_entry.get())
         
         if(self.cipherMethod == 'affine_cipher'):
+            input_txt = self.encryptText.get('1.0', 'end-1c').lower()
+            input_key1 = int(self.key1_entry.get())
             decrypted = DecryptionMethod.affine_decipher(input_txt, input_key1).upper()
+        elif(self.cipherMethod == 'standard_vigenere'):
+            input_txt = self.inputText.get('1.0', 'end-1c').lower()
+            input_key1 = self.key1_entry.get()
+            decrypted = DecryptionMethod.standard_vigenere(input_key1, input_txt).upper()
+        elif(self.cipherMethod == 'full_vigenere'):
+            input_txt = self.inputText.get('1.0', 'end-1c').lower()
+            input_key1 = self.key1_entry.get()
+            decrypted = DecryptionMethod.full_vigenere(input_key1, input_txt).upper()
+        elif(self.cipherMethod == 'autoKey_vigenere'):
+            input_txt = self.inputText.get('1.0', 'end-1c').lower()
+            input_key1 = self.key1_entry.get()
+            decrypted = DecryptionMethod.autoKey_vigenere(input_key1, input_txt).upper()
+        elif(self.cipherMethod == 'extended_vigenere'):
+            input_txt = self.inputText.get('1.0', 'end-1c')
+            input_key1 = self.key1_entry.get()
+            decrypted = DecryptionMethod.extended_vigenere(input_key1, input_txt)
+        elif(self.cipherMethod == 'playfair_cipher'):
+            input_txt = self.inputText.get('1.0', 'end-1c').lower()
+            input_key1 = self.key1_entry.get()
+            decrypted = DecryptionMethod.playfair_cipher(input_key1, input_txt).upper()
 
         self.decryptText.insert(tk.INSERT, decrypted)
         self.decryptText.config(state='disabled')
@@ -227,8 +320,24 @@ class ControlFrame(ttk.LabelFrame):
             'affine_cipher')
         self.frames[1] = ConverterFrame(
             container,
-            2,
-            'affine_cipher')
+            1,
+            'standard_vigenere')
+        self.frames[2] = ConverterFrame(
+            container,
+            1,
+            'full_vigenere')
+        self.frames[3] = ConverterFrame(
+            container,
+            1,
+            'autoKey_vigenere')
+        self.frames[4] = ConverterFrame(
+            container,
+            1,
+            'extended_vigenere')
+        self.frames[5] = ConverterFrame(
+            container,
+            1,
+            'playfair_cipher')
 
         self.change_frame()
 

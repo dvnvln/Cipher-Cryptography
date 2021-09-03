@@ -1,7 +1,7 @@
 import string
 import random
 
-class PlayFairVigenere:
+class PlayFair:
     def __init__(self, keyword, plain_text):
       self.keyword = keyword.upper()
       self.plain_text = plain_text.upper()
@@ -121,5 +121,5 @@ class PlayFairVigenere:
 if __name__ =="__main__":
     keyword = "JALANGANESHASEPULUH"
     text = "temuiibunantimalam"
-    coba = PlayFairVigenere(keyword,text)
+    coba = PlayFair(keyword,text)
     coba.printAll()
