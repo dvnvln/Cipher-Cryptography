@@ -44,6 +44,12 @@ class FullVigenere:
             text.append(chr(k + ord('A')))
         self.origin_text = ("" . join(text))
 
+    def getCipherText(self):
+      return self.cipher_text
+
+    def getOriginText(self):
+      return self.origin_text
+
     def printAll(self):
         print("Input plain_text user : ", self.plain_text)
         print("Input keyword user : ", self.keyword)
