@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showerror
+from tkinter.filedialog import askopenfilename
 from affine import *
 
 
@@ -23,6 +24,13 @@ class UtilityFunction:
             stringRes += i
         
         return stringRes
+
+    @staticmethod
+    def open_file():
+        file_path = askopenfilename(filetypes=[('Text Files', '*txt')])
+        if file_path is not None:
+            pass
+        return file_path
 
 class ConverterFrame(ttk.Frame):
     def __init__(self, container, keyTotal, cipherMethod):
@@ -84,19 +92,17 @@ class ConverterFrame(ttk.Frame):
         # decrypt button
         self.decrypt_button = ttk.Button(sideFrame, text='Decrypt Text')
         self.decrypt_button.grid(column=1, row=2, sticky='w', **options)
-        self.decrypt_button.configure(command=self.decrypt)
+        self.decrypt_button.configure(command=self.decrypt, state='disabled')
 
         # import file button
         self.import_button = ttk.Button(sideFrame, text='Import File')
         self.import_button.grid(column=0, row=3, sticky='w', **options)
+        self.import_button.configure(command=self.importFile)
 
         # export file button
         self.export_button = ttk.Button(sideFrame, text='Export File')
         self.export_button.grid(column=1, row=3, sticky='w', **options)
-
-        # result label
-        self.result_label = ttk.Label(sideFrame)
-        self.result_label.grid(row=5, columnspan=3, **options)
+        self.export_button.configure(command=self.exportFile, state='disabled')
 
         # add padding to the frame and show it
         self.grid(column=0, row=2, padx=5, pady=5, sticky="nsew")
@@ -113,6 +119,8 @@ class ConverterFrame(ttk.Frame):
 
         self.encryptText.insert(tk.INSERT, encrypted)
         self.encryptText.config(state='disabled')
+        self.export_button.config(state='normal')
+        self.decrypt_button.config(state='normal')
 
     def decrypt(self, event=None):
         self.decryptText.config(state='normal')
@@ -126,6 +134,25 @@ class ConverterFrame(ttk.Frame):
 
         self.decryptText.insert(tk.INSERT, decrypted)
         self.decryptText.config(state='disabled')
+
+    def importFile(self, event=None):
+        f = UtilityFunction.open_file()
+        readFile = open(f)
+        self.inputText.delete('1.0', 'end')
+        self.inputText.insert(tk.INSERT, readFile.read())
+        print(readFile.read())
+
+    def exportFile(self, event=None):
+        self.encryptText.config(state='normal')
+        
+        encrypt_txt = self.encryptText.get('1.0', 'end-1c')
+        filename = 'EncryptedText.txt'
+        save_text = open(filename, 'w')
+        save_text.write(encrypt_txt)
+        save_text.close()
+
+        self.encryptText.config(state='disabled')
+        
 
     def reset(self):
         self.key1_entry.delete(0, "end")
