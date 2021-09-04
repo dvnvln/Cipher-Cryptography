@@ -24,7 +24,7 @@ class FullVigenere:
         table = []
         for i in range(26):
             order = list(string.ascii_uppercase)
-            random.shuffle(order)
+            random.Random(i).shuffle(order)
             table.append(order)
         self.matrix = table
 
