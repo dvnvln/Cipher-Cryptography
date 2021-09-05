@@ -1,12 +1,14 @@
 from extendedvigenere import *
 from tkinter.filedialog import askopenfilename
+import os
 
-filepath = 'EcgvlJbWoAEzWXp.jpg'
+filepath = 'Tugas1-Sem1-2021-2022.pdf'
+fileName, fileExtension = os.path.splitext(filepath)
 
 readFile = open(filepath, 'rb')
 fileReaded = readFile.read()
 b = bytearray(fileReaded)
-print(b)
+# print(b)
 result = b.decode('latin-1')
 # print(result)
 
@@ -18,7 +20,7 @@ ext = ExtendedVigenere(keyword_ext,text_ext)
 
 decrypted_txt = ext.getOriginText()
 b_decrypted = decrypted_txt.encode('latin-1')
-exportFileName = 'hasilDecrypted.jpg'
+exportFileName = 'hasilDecrypted' + fileExtension
 save_text = open(exportFileName, 'wb')
 save_text.write(b_decrypted)
 save_text.close()

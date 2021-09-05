@@ -10,6 +10,7 @@ from autokeyvigenere import *
 from extendedvigenere import *
 from playfair import *
 from hill import *
+import os
 
 
 class EncryptionMethod:
@@ -301,21 +302,20 @@ class ConverterFrame(ttk.Frame):
 
     def importFile(self, event=None):
         f = UtilityFunction.open_file()
+        fName, self.fileExtension = fileName, fileExtension = os.path.splitext(f)
         readFile = open(f, 'rb')
         fileReaded = readFile.read()
         b = bytearray(fileReaded)
-        print(b)
         result = b.decode('latin-1')
         self.inputText.delete('1.0', 'end')
         self.inputText.insert(tk.INSERT, result)
-        print(readFile.read())
 
     def exportFile(self, event=None):
         self.encryptText.config(state='normal')
         
         encrypt_txt = self.encryptText.get('1.0', 'end-1c')
-        filename = 'EncryptedText.txt'
-        save_text = open(filename, 'wb')
+        filename = 'EncryptedText' + self.fileExtension
+        save_text = open(filename, 'w')
         save_text.write(encrypt_txt)
         save_text.close()
 
