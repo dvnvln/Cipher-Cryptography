@@ -83,7 +83,7 @@ class UtilityFunction:
 
     @staticmethod
     def open_file():
-        file_path = askopenfilename(filetypes=[('Text Files', '*txt')])
+        file_path = askopenfilename(filetypes=[('Files', '*')])
         if file_path is not None:
             pass
         return file_path
@@ -280,9 +280,13 @@ class ConverterFrame(ttk.Frame):
 
     def importFile(self, event=None):
         f = UtilityFunction.open_file()
-        readFile = open(f)
+        readFile = open(f, 'rb')
+        fileReaded = readFile.read()
+        b = bytearray(fileReaded)
+        print(b)
+        result = b.decode('latin-1')
         self.inputText.delete('1.0', 'end')
-        self.inputText.insert(tk.INSERT, readFile.read())
+        self.inputText.insert(tk.INSERT, result)
         print(readFile.read())
 
     def exportFile(self, event=None):
@@ -290,7 +294,7 @@ class ConverterFrame(ttk.Frame):
         
         encrypt_txt = self.encryptText.get('1.0', 'end-1c')
         filename = 'EncryptedText.txt'
-        save_text = open(filename, 'w')
+        save_text = open(filename, 'wb')
         save_text.write(encrypt_txt)
         save_text.close()
 
@@ -301,11 +305,14 @@ class ConverterFrame(ttk.Frame):
         self.key1_entry.delete(0, "end")
         self.decryptText.config(state='normal')
         self.encryptText.config(state='normal')
+        self.encryptTextFive.config(state='normal')
         self.decryptText.delete('1.0', 'end')
         self.encryptText.delete('1.0', 'end')
+        self.encryptTextFive.delete('1.0', 'end')
         self.inputText.delete('1.0', 'end')
         self.decryptText.config(state='disabled')
         self.encryptText.config(state='disabled')
+        self.encryptTextFive.config(state='disabled')
         # self.result_label.text = ''
 
 
