@@ -144,6 +144,7 @@ class ConverterFrame(ttk.Frame):
 
         self.keyTotal = keyTotal
         self.cipherMethod = cipherMethod
+        self.imported = False
 
         # field options
         options = {'padx': 5, 'pady': 0}
@@ -255,10 +256,16 @@ class ConverterFrame(ttk.Frame):
             input_txt = UtilityFunction.toAlphabetOnly(UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).upper())
             encrypted = EncryptionMethod.hill_cipher(input_key1, input_key2, input_txt).upper()
 
-        self.encryptText.insert(tk.INSERT, encrypted)
+        if(self.imported == True and self.cipherMethod == 'extended_vigenere' and self.fileExtension != '.txt'):
+            self.encryptedResult = encrypted
+            self.encryptText.insert(tk.INSERT, 'file encrypted!')
+            self.encryptTextFive.insert(tk.INSERT, 'file encrypted!')
+        else:
+            self.encryptText.insert(tk.INSERT, encrypted)
+            encryptedFive = UtilityFunction.splitFive(encrypted)
+            self.encryptTextFive.insert(tk.INSERT, encryptedFive)
+
         self.encryptText.config(state='disabled')
-        encryptedFive = UtilityFunction.splitFive(encrypted)
-        self.encryptTextFive.insert(tk.INSERT, encryptedFive)
         self.encryptTextFive.config(state='disabled')
         self.export_button.config(state='normal')
         self.decrypt_button.config(state='normal')
@@ -297,8 +304,12 @@ class ConverterFrame(ttk.Frame):
             input_key2 = int(self.key2_entry.get())
             decrypted = DecryptionMethod.hill_cipher(input_key1, input_key2, input_txt).upper()
 
-        self.decryptText.insert(tk.INSERT, decrypted)
-        self.decryptText.config(state='disabled')
+        if(self.imported == True and self.cipherMethod == 'extended_vigenere' and self.fileExtension != '.txt'):
+            self.decryptedResult = decrypted
+            self.decryptText.insert(tk.INSERT, 'file encrypted!')
+        else:
+            self.decryptText.insert(tk.INSERT, decrypted)
+            self.decryptText.config(state='disabled')
 
     def importFile(self, event=None):
         f = UtilityFunction.open_file()
@@ -309,18 +320,48 @@ class ConverterFrame(ttk.Frame):
         result = b.decode('latin-1')
         self.inputText.delete('1.0', 'end')
         self.inputText.insert(tk.INSERT, result)
+        self.imported = True
 
     def exportFile(self, event=None):
-        self.encryptText.config(state='normal')
-        
-        encrypt_txt = self.encryptText.get('1.0', 'end-1c')
-        filename = 'EncryptedText' + self.fileExtension
-        save_text = open(filename, 'w')
-        save_text.write(encrypt_txt)
-        save_text.close()
+        if(self.imported == True and self.cipherMethod == 'extended_vigenere' and self.fileExtension != '.txt'):
+            exportEncrypted = 'hasilEncrypted' + self.fileExtension
+            save_text = open(exportEncrypted, 'w', encoding='utf-8')
+            save_text.write(self.encryptedResult)
+            save_text.close()
 
-        self.encryptText.config(state='disabled')
-        
+            decrypted_txt = self.decryptedResult
+            b_decrypted = decrypted_txt.encode('latin-1')
+            exportFileName = 'hasilDecrypted' + self.fileExtension
+            save_text = open(exportFileName, 'wb')
+            save_text.write(b_decrypted)
+            save_text.close()
+        else:
+            self.encryptText.config(state='normal')
+            self.encryptTextFive.config(state='normal')
+            
+            encrypt_txt = self.encryptText.get('1.0', 'end-1c')
+            if(self.imported == True):
+                filename = 'hasilEncrypted' + self.fileExtension
+            else:
+                filename = 'hasilEncrypted.txt'
+            save_text = open(filename, 'w')
+            save_text.write(encrypt_txt)
+            save_text.close()
+
+            encrypt_txt = self.encryptTextFive.get('1.0', 'end-1c')
+            if(self.imported == True):
+                filename = 'hasilEncryptedFive' + self.fileExtension
+            else:
+                filename = 'hasilEncryptedFive.txt'
+            save_text = open(filename, 'w')
+            save_text.write(encrypt_txt)
+            save_text.close()
+
+            self.encryptText.config(state='disabled')
+            self.encryptTextFive.config(state='disabled')
+        self.downloaded_label = ttk.Label(self, text='File Downloaded!')
+        self.downloaded_label.grid(column=0, row=4, sticky='w')
+            
 
     def reset(self):
         self.key1_entry.delete(0, "end")
@@ -334,7 +375,7 @@ class ConverterFrame(ttk.Frame):
         self.decryptText.config(state='disabled')
         self.encryptText.config(state='disabled')
         self.encryptTextFive.config(state='disabled')
-        # self.result_label.text = ''
+        self.imported = False
 
 
 class ControlFrame(ttk.LabelFrame):
@@ -440,7 +481,7 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        self.title("Tugas 1 Kripto")
+        self.title("Tugas 1 Kripto (13518003 | 13518116)")
         self.resizable(False, False)
 
 

@@ -89,15 +89,16 @@ class Hill:
     def getDecipherText(self):
         return self.decryptedText
 
-# Driver Code
-def main():
-    message = "PAYMOREMONE"
-    key = "CFAIBECGHIJDBFHI"
+# # Driver Code
+# def main():
+#     message = "PAYMOREMONE"
+#     key = "CFAIBECGHIJDBFHI"
+#     key3 = "RRFVSVCCT"
 
-    hill = Hill(key, 4, message)
-    print(message)
-    print(hill.getCipherText())
-    print(hill.getDecipherText())
+#     hill = Hill(key, 4, message)
+#     print(message)
+#     print(hill.getCipherText())
+#     print(hill.getDecipherText())
  
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
