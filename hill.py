@@ -1,69 +1,103 @@
-# Python3 code to implement Hill Cipher
- 
-keyMatrix = [[0] * 3 for i in range(3)]
- 
-# Generate vector for the message
-messageVector = [[0] for i in range(3)]
- 
-# Generate vector for the cipher
-cipherMatrix = [[0] for i in range(3)]
- 
-# Following function generates the
-# key matrix for the key string
-def getKeyMatrix(key):
-    k = 0
-    for i in range(3):
-        for j in range(3):
-            keyMatrix[i][j] = ord(key[k]) % 65
-            print(keyMatrix[i][j], end=' ')
-            k += 1
-        print("")
- 
-# Following function encrypts the message
-def encrypt(messageVector):
-    for i in range(3):
-        for j in range(1):
-            cipherMatrix[i][j] = 0
-            for x in range(3):
-                cipherMatrix[i][j] += (keyMatrix[i][x] *
-                                       messageVector[x][j])
-            cipherMatrix[i][j] = cipherMatrix[i][j] % 26
+import numpy as np
+from sympy import Matrix
 
- 
-def HillCipher(message, key):
- 
-    # Get key matrix from the key string
-    getKeyMatrix(key)
- 
-    # Generate vector for the message
-    for i in range(3):
-        messageVector[i][0] = ord(message[i]) % 65
- 
-    # Following function generates
-    # the encrypted vector
-    encrypt(messageVector)
- 
-    # Generate the encrypted text
-    # from the encrypted vector
-    CipherText = []
-    for i in range(3):
-        CipherText.append(chr(cipherMatrix[i][0] + 65))
- 
-    # Finally print the ciphertext
-    print("Ciphertext: ", "".join(CipherText))
- 
+class Hill:
+    def __init__(self, keyword, keyNumber, plain_text):
+        self.keyword = keyword.upper()
+        self.keyNumber = keyNumber
+        self.plain_text = plain_text.upper()
+        self.plainTextList = [char for char in self.plain_text]
+        self.cipherTextString = ""
+        self.plainTextLength = len(plain_text)
+
+        if(len(self.plainTextList) % self.keyNumber != 0):
+            for i in range (self.keyNumber - (len(self.plainTextList) % self.keyNumber)):
+                self.plain_text += 'X'
+                self.plainTextList.append('X')
+
+        self.cipherMatrix = [[0] for i in range(self.keyNumber)]
+        self.decipherMatrix = [[0] for i in range(self.keyNumber)]
+        self.messageVector = [[0] for i in range(self.keyNumber)]
+        self.encryptedVector = [[0] for i in range(self.keyNumber)]
+
+        self.keyMatrix = [[0] * self.keyNumber for i in range(self.keyNumber)]
+        self.generateKey()
+
+        self.keyMatrixInverse = Matrix(self.keyMatrix)
+        self.keyMatrixInverse = self.keyMatrixInverse.inv_mod(26)
+        # print('-----')
+        # print(self.keyMatrixInverse[0,0])
+        self.encrypt()
+        self.decrypt()
+
+    def generateKey (self):
+        k = 0
+        for i in range(self.keyNumber):
+            for j in range(self.keyNumber):
+                self.keyMatrix[i][j] = ord(self.keyword[k]) % 65
+                k += 1
+
+    def encrypt (self):
+        # Generate vector for the message
+        for k in range(int(len(self.plainTextList) / self.keyNumber)):
+            for i in range(self.keyNumber):
+                self.messageVector[i][0] = ord(self.plainTextList[i]) % 65
+
+            for i in range(self.keyNumber):
+                for j in range(1):
+                    self.cipherMatrix[i][j] = 0
+                    for x in range(self.keyNumber):
+                        self.cipherMatrix[i][j] += (self.keyMatrix[i][x] *
+                                            self.messageVector[x][j])
+                    self.cipherMatrix[i][j] = self.cipherMatrix[i][j] % 26
+
+            # Generate the encrypted text
+            # from the encrypted vector
+            for i in range(self.keyNumber):
+                self.cipherTextString += chr(self.cipherMatrix[i][0] + 65)
+
+            for i in range(self.keyNumber):
+                self.plainTextList.pop(0)
+            self.encryptedTextList = [char for char in self.cipherTextString]
+
+    def decrypt(self):
+        self.decryptedText = ''
+        for k in range(int(len(self.encryptedTextList) / self.keyNumber)):
+            for i in range(self.keyNumber):
+                    self.encryptedVector[i][0] = ord(self.encryptedTextList[i]) % 65
+
+            for i in range(self.keyNumber):
+                for j in range (1):
+                    self.decipherMatrix[i][j] = 0
+                    for x in range(self.keyNumber):
+                        self.decipherMatrix[i][j] += (self.keyMatrixInverse[i,x] * self.encryptedVector[x][j])
+                    self.decipherMatrix[i][j] = self.decipherMatrix[i][j] % 26
+            
+            for i in range(self.keyNumber):
+                self.decryptedText += chr(self.decipherMatrix[i][0] + 65)
+
+            for i in range(self.keyNumber):
+                self.encryptedTextList.pop(0)
+
+        if(self.plainTextLength % self.keyNumber != 0):
+            for i in range (self.keyNumber - (self.plainTextLength % self.keyNumber)):
+                self.decryptedText = self.decryptedText[:-1]
+    
+    def getCipherText(self):
+        return self.cipherTextString
+
+    def getDecipherText(self):
+        return self.decryptedText
+
 # Driver Code
 def main():
- 
-    # Get the message to
-    # be encrypted
-    # harus kapital
-    message = "PA"
- 
-    # Get the key
-    key = "RRFVSVCCT"
- 
-    HillCipher(message, key)
+    message = "PAYMOREMONE"
+    key = "CFAIBECGHIJDBFHI"
+
+    hill = Hill(key, 4, message)
+    print(message)
+    print(hill.getCipherText())
+    print(hill.getDecipherText())
  
 if __name__ == "__main__":
     main()

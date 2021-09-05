@@ -9,6 +9,7 @@ from fullvigenere import *
 from autokeyvigenere import *
 from extendedvigenere import *
 from playfair import *
+from hill import *
 
 
 class EncryptionMethod:
@@ -41,6 +42,11 @@ class EncryptionMethod:
         play = PlayFair(key, input)
         return play.getCipherText()
 
+    @staticmethod
+    def hill_cipher(key, m, input):
+        hill = Hill(key, m, input)
+        return hill.getCipherText()
+
 class DecryptionMethod:
     @staticmethod
     def affine_decipher(input, key):
@@ -70,6 +76,11 @@ class DecryptionMethod:
     def playfair_cipher(key, input):
         play = PlayFair(key, input)
         return play.getOriginText()
+
+    @staticmethod
+    def hill_cipher(key, m, input):
+        hill = Hill(key, m, input)
+        return hill.getDecipherText()
 
 class UtilityFunction:
     @staticmethod
@@ -175,7 +186,7 @@ class ConverterFrame(ttk.Frame):
 
         if(self.keyTotal==2):
             # key2 label
-            self.key2_label = ttk.Label(sideFrame, text='Key 2')
+            self.key2_label = ttk.Label(sideFrame, text='Key 2 (m)')
             self.key2_label.grid(column=0, row=1, sticky='n',  **options)
 
             # key2 entry
@@ -237,6 +248,11 @@ class ConverterFrame(ttk.Frame):
             input_key1 = self.key1_entry.get()
             input_txt = UtilityFunction.toAlphabetOnly(UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower())
             encrypted = EncryptionMethod.playfair_cipher(input_key1, input_txt).upper()
+        elif(self.cipherMethod == 'hill_cipher'):
+            input_key1 = self.key1_entry.get()
+            input_key2 = int(self.key2_entry.get())
+            input_txt = UtilityFunction.toAlphabetOnly(UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).upper())
+            encrypted = EncryptionMethod.hill_cipher(input_key1, input_key2, input_txt).upper()
 
         self.encryptText.insert(tk.INSERT, encrypted)
         self.encryptText.config(state='disabled')
@@ -274,6 +290,11 @@ class ConverterFrame(ttk.Frame):
             input_txt = UtilityFunction.toAlphabetOnly(UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).lower())
             input_key1 = self.key1_entry.get()
             decrypted = DecryptionMethod.playfair_cipher(input_key1, input_txt).upper()
+        elif(self.cipherMethod == 'hill_cipher'):
+            input_txt = UtilityFunction.toAlphabetOnly(UtilityFunction.splitText(self.inputText.get('1.0', 'end-1c')).upper())
+            input_key1 = self.key1_entry.get()
+            input_key2 = int(self.key2_entry.get())
+            decrypted = DecryptionMethod.hill_cipher(input_key1, input_key2, input_txt).upper()
 
         self.decryptText.insert(tk.INSERT, decrypted)
         self.decryptText.config(state='disabled')
@@ -366,6 +387,13 @@ class ControlFrame(ttk.LabelFrame):
             value=5,
             variable=self.selected_value,
             command=self.change_frame).grid(column=5, row=0, padx=5, pady=5)
+        
+        ttk.Radiobutton(
+            self,
+            text='Hill Cipher',
+            value=6,
+            variable=self.selected_value,
+            command=self.change_frame).grid(column=6, row=0, padx=5, pady=5)
 
         self.grid(column=0, row=1, padx=5, pady=5, sticky='ew')
 
@@ -395,6 +423,10 @@ class ControlFrame(ttk.LabelFrame):
             container,
             1,
             'playfair_cipher')
+        self.frames[6] = ConverterFrame(
+            container,
+            2,
+            'hill_cipher')
 
         self.change_frame()
 
