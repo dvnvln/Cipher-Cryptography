@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showerror
+from tkinter import scrolledtext
 from tkinter.filedialog import askopenfilename
 from affine import *
 from standardvigenere import *
@@ -101,6 +102,30 @@ class UtilityFunction:
         
         return alphabetOnlyText
 
+    @staticmethod
+    def splitFive(text):
+        text = splitText(text)
+        charList = [char for char in text]
+        stringRes = ''
+        charListLen = len(charList)
+        for i in range (int(charListLen / 5)):
+                for j in range (5):
+                    stringRes += charList[j]
+                for j in range (5):
+                    charList.pop(0)
+
+                if (i != ((int(charListLen / 5)) - 1)):
+                    stringRes += ' '
+
+        if((len(charList) % 5) != 0):
+            stringRes += ' '
+            for i in range (len(charList) % 5):
+                stringRes += charList[i]
+        
+        return stringRes
+
+
+
 class ConverterFrame(ttk.Frame):
     def __init__(self, container, keyTotal, cipherMethod):
         super().__init__(container)
@@ -118,8 +143,14 @@ class ConverterFrame(ttk.Frame):
 
         self.encryptLabel = ttk.Label(self, text='Encrypted Text')
         self.encryptLabel.grid(column=1, row=0, sticky='w', **options)
-        self.encryptText = tk.Text(self, height=25, width=30, state='disabled')
-        self.encryptText.grid(column=1, row=1, **options)
+
+        encryptFrame = tk.Frame(self, padx=25, pady=15)
+        encryptFrame.grid(row=1, column=1, padx=5, pady=5, sticky='nsew')
+
+        self.encryptText = tk.scrolledtext.ScrolledText(encryptFrame, height=12.5, width=30, state='disabled')
+        self.encryptText.grid(column=0, row=0, **options)
+        self.encryptTextFive = tk.scrolledtext.ScrolledText(encryptFrame, height=12.5, width=30, state='disabled')
+        self.encryptTextFive.grid(column=0, row=1, **options)
 
         self.decryptLabel = ttk.Label(self, text='Decrypted Text')
         self.decryptLabel.grid(column=2, row=0, sticky='w', **options)
@@ -179,6 +210,8 @@ class ConverterFrame(ttk.Frame):
     def encrypt(self, event=None):
         self.encryptText.config(state='normal')
         self.encryptText.delete('1.0', 'end')
+        self.encryptTextFive.config(state='normal')
+        self.encryptTextFive.delete('1.0', 'end')
 
         if(self.cipherMethod == 'affine_cipher'):
             input_key1 = int(self.key1_entry.get())
@@ -207,6 +240,9 @@ class ConverterFrame(ttk.Frame):
 
         self.encryptText.insert(tk.INSERT, encrypted)
         self.encryptText.config(state='disabled')
+        encryptedFive = UtilityFunction.splitFive(encrypted)
+        self.encryptTextFive.insert(tk.INSERT, encryptedFive)
+        self.encryptTextFive.config(state='disabled')
         self.export_button.config(state='normal')
         self.decrypt_button.config(state='normal')
 
