@@ -306,7 +306,7 @@ class ConverterFrame(ttk.Frame):
 
         if(self.imported == True and self.cipherMethod == 'extended_vigenere' and self.fileExtension != '.txt'):
             self.decryptedResult = decrypted
-            self.decryptText.insert(tk.INSERT, 'file encrypted!')
+            self.decryptText.insert(tk.INSERT, 'file decrypted!')
         else:
             self.decryptText.insert(tk.INSERT, decrypted)
             self.decryptText.config(state='disabled')
@@ -324,7 +324,7 @@ class ConverterFrame(ttk.Frame):
 
     def exportFile(self, event=None):
         if(self.imported == True and self.cipherMethod == 'extended_vigenere' and self.fileExtension != '.txt'):
-            exportEncrypted = 'hasilEncrypted' + self.fileExtension
+            exportEncrypted = 'hasilEncrypted.txt'
             save_text = open(exportEncrypted, 'w', encoding='utf-8')
             save_text.write(self.encryptedResult)
             save_text.close()
@@ -340,19 +340,19 @@ class ConverterFrame(ttk.Frame):
             self.encryptTextFive.config(state='normal')
             
             encrypt_txt = self.encryptText.get('1.0', 'end-1c')
-            if(self.imported == True):
-                filename = 'hasilEncrypted' + self.fileExtension
-            else:
-                filename = 'hasilEncrypted.txt'
+            # if(self.imported == True):
+            #     filename = 'hasilEncrypted' + self.fileExtension
+            # else:
+            filename = 'hasilEncrypted.txt'
             save_text = open(filename, 'w')
             save_text.write(encrypt_txt)
             save_text.close()
 
             encrypt_txt = self.encryptTextFive.get('1.0', 'end-1c')
-            if(self.imported == True):
-                filename = 'hasilEncryptedFive' + self.fileExtension
-            else:
-                filename = 'hasilEncryptedFive.txt'
+            # if(self.imported == True):
+            #     filename = 'hasilEncryptedFive' + self.fileExtension
+            # else:
+            filename = 'hasilEncryptedFive.txt'
             save_text = open(filename, 'w')
             save_text.write(encrypt_txt)
             save_text.close()
